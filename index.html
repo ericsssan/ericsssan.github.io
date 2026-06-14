@@ -174,13 +174,27 @@
       </section>
 
       <section>
-        <h2>Tooling &amp; deep dives</h2>
-        <p class="section-sub">Developer tooling and performance work.</p>
+        <h2>Static analysis</h2>
+        <p class="section-sub">Catching bugs the compiler can't — statically.</p>
         <div class="grid">
+          <div class="card">
+            <h4><a href="https://github.com/ericsssan/san">san</a></h4>
+            <p>Deep static analyzer for <code>unsafe</code> Rust. Plugs into rustc as a MIR driver — dataflow + typestate analysis, 132 checkers across the stdlib and ecosystem.</p>
+            <span class="stat">132 checkers · 183-fixture corpus</span>
+            <div class="tags"><span class="tag">rust</span><span class="tag">mir</span><span class="tag">unsafe</span><span class="tag">dataflow</span></div>
+          </div>
           <div class="card">
             <h4><a href="https://github.com/ericsssan/zbc">zbc</a></h4>
             <p>Static analyzer that infers Zig lifetime, ownership and cleanup bugs — no annotations, no runtime instrumentation.</p>
+            <div class="tags"><span class="tag">zig</span><span class="tag">lifetimes</span><span class="tag">ownership</span></div>
           </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Tooling &amp; deep dives</h2>
+        <p class="section-sub">Developer tooling and performance work.</p>
+        <div class="grid">
           <div class="card">
             <h4><a href="https://github.com/ericsssan/zcov">zcov</a></h4>
             <p>Cross-platform code coverage for Zig. One command, no external dependencies.</p>
