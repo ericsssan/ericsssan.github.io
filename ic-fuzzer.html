@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Production Flamegraph to Fixed Megamorphic Call Site — Eric San</title>
+  <meta name="description" content="A walkthrough of diagnosing and fixing V8 JIT deoptimization in Node.js — from flamegraph to 4.2× speedup." />
+  <meta property="og:title" content="From Production Flamegraph to Fixed Megamorphic Call Site" />
+  <meta property="og:description" content="Profilers tell you where time goes. They don't tell you why the JIT gave up." />
+  <meta property="og:type" content="article" />
+  <style>
+    :root {
+      --bg: #0d1117; --bg-soft: #161b22; --border: #21262d; --border-hi: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #f7a41d;
+      --accent-soft: rgba(247,164,29,0.12); --radius: 8px;
+      --prose: 680px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #ffffff; --bg-soft: #f6f8fa; --border: #d0d7de; --border-hi: #afb8c1;
+        --text: #1f2328; --muted: #59636e; --accent: #bd7b06; --accent-soft: rgba(247,164,29,0.14);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    nav {
+      border-bottom: 1px solid var(--border); padding: 14px 24px;
+      display: flex; align-items: center; gap: 16px;
+      font-size: 14px;
+    }
+    nav a { color: var(--muted); }
+    nav a:hover { color: var(--text); text-decoration: none; }
+    nav .sep { color: var(--border-hi); }
+    nav .cur { color: var(--text); }
+
+    /* Article layout */
+    .article-wrap { max-width: var(--prose); margin: 0 auto; padding: 0 24px 100px; }
+
+    header.art { padding: 56px 0 40px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+    .kicker {
+      font-size: 12px; text-transform: uppercase; letter-spacing: .1em;
+      color: var(--accent); font-weight: 700; margin-bottom: 14px;
+    }
+    h1.art { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
+    .deck { font-size: 1.15rem; color: var(--muted); margin: 0 0 24px; line-height: 1.55; }
+    .meta { font-size: 13px; color: var(--muted); display: flex; gap: 20px; flex-wrap: wrap; }
+    .meta a { color: var(--muted); }
+    .meta a:hover { color: var(--accent); text-decoration: none; }
+
+    /* Prose */
+    .prose h2 { font-size: 1.3rem; margin: 48px 0 12px; letter-spacing: -0.01em; }
+    .prose h3 { font-size: 1.05rem; margin: 32px 0 8px; color: var(--text); }
+    .prose p { margin: 0 0 20px; }
+    .prose ul, .prose ol { margin: 0 0 20px; padding-left: 24px; }
+    .prose li { margin-bottom: 6px; }
+    .prose strong { color: var(--text); font-weight: 600; }
+
+    /* Result callout */
+    .result {
+      background: var(--accent-soft); border: 1px solid var(--accent);
+      border-radius: var(--radius); padding: 20px 24px; margin: 28px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .result .label { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+    .result .win { color: var(--accent); font-weight: 700; }
+
+    /* Code */
+    pre {
+      background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 18px 20px; overflow-x: auto; margin: 0 0 24px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.84rem; line-height: 1.6;
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; }
+    p code, li code {
+      background: var(--bg-soft); border: 1px solid var(--border);
+      border-radius: 4px; padding: 1px 6px;
+    }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; margin: 0 0 24px; font-size: 0.9rem; }
+    th { text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--border-hi); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    /* Workflow steps */
+    .steps { counter-reset: step; margin: 0 0 24px; padding: 0; list-style: none; }
+    .steps li { counter-increment: step; display: flex; gap: 16px; margin-bottom: 20px; }
+    .steps li::before {
+      content: counter(step); flex-shrink: 0; width: 28px; height: 28px;
+      background: var(--accent-soft); border: 1px solid var(--accent);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--accent); margin-top: 2px;
+      font-family: ui-monospace, monospace;
+    }
+
+    /* Footer */
+    .art-footer {
+      margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--muted);
+    }
+    .art-footer a { color: var(--accent); }
+    .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .tag { font-size: 0.75rem; color: var(--muted); border: 1px solid var(--border-hi); border-radius: 999px; padding: 3px 10px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/">← ericsssan.github.io</a>
+    <span class="sep">/</span>
+    <span class="cur">ic-fuzzer</span>
+  </nav>
+
+  <div class="article-wrap">
+    <header class="art">
+      <div class="kicker">Performance · Node.js · V8 internals</div>
+      <h1 class="art">From Production Flamegraph to Fixed Megamorphic Call Site</h1>
+      <p class="deck">Profilers tell you where time goes. They don't tell you why the JIT gave up.</p>
+      <div class="meta">
+        <span>Eric San</span>
+        <span>2026</span>
+        <a href="https://github.com/ericsssan/ic-fuzzer">Source on GitHub →</a>
+      </div>
+    </header>
+
+    <article class="prose">
+
+      <p>There's a class of production performance problem that profilers can locate but not explain. The flamegraph is unambiguous — <code>handleEvent</code> is eating 40% of CPU. The function looks fine. Local benchmarks look fine. The problem isn't in the code; it's in what the runtime decided to do with it.</p>
+
+      <p>V8 optimizes by speculating on object shapes. When too many distinct shapes flow through a property access, V8 gives up on the fast path — <strong>megamorphism</strong> — and falls back to a hashtable lookup on every access. This doesn't show up in source. It's a runtime fact, invisible to the reader and undetectable by profiler sampling.</p>
+
+      <p>This article shows the full loop: find it with <code>--log-ic</code>, fix it at the shape boundary, enforce it in CI.</p>
+
+      <div class="result">
+        <div class="label">Benchmark — 2,000,000 events, 20 hot iterations</div>
+        broken &nbsp; 229.4ms &nbsp; (megamorphic loads, un-inlinable call)<br>
+        <span class="win">fixed &nbsp;&nbsp; &nbsp;54.5ms &nbsp; (monomorphic loads, inlined) &nbsp; ← ~4.2× faster</span>
+      </div>
+
+      <p>The fix is one line at the ingestion boundary. <code>broken/handler.js</code> and <code>fixed/handler.js</code> are byte-for-byte identical.</p>
+
+      <h2>How V8 executes your code</h2>
+
+      <p>V8 runs JavaScript in three tiers:</p>
+
+      <pre>Ignition (interpreter) → Maglev (mid-tier JIT) → Turbofan (optimizing compiler)</pre>
+
+      <p>At each property access (<code>.type</code>, <code>.id</code>, etc.), <strong>Ignition</strong> maintains an <strong>inline cache (IC)</strong> — a record of which object shapes (hidden classes) that site has seen:</p>
+
+      <ul>
+        <li><strong>monomorphic</strong> — 1 shape → direct memory load, very fast</li>
+        <li><strong>polymorphic</strong> — 2–4 shapes → small dispatch table, still fast</li>
+        <li><strong>megamorphic</strong> — 5+ shapes → generic hash-table lookup, permanently slow</li>
+      </ul>
+
+      <p>When a function gets hot, <strong>Turbofan</strong> reads the IC feedback Ignition collected, then <em>replaces</em> the IC with specialized machine code. Megamorphic IC feedback causes Turbofan to emit permanently slower code — and that decision is baked in for the lifetime of the process.</p>
+
+      <p>This is why the bug is invisible in source: the slow path is a runtime decision made before your hot loop even starts.</p>
+
+      <h2>Finding it with <code>--log-ic</code></h2>
+
+      <p>Node exposes V8's IC log via <code>--log-ic</code>. Run the broken path under tracing:</p>
+
+      <pre>node --log-ic --prof broken/drive.js</pre>
+
+      <p>The log records every IC state transition. You'll see <code>handleEvent</code>'s property accesses cycling through <code>monomorphic → polymorphic → megamorphic</code> as different event shapes flow through. Once a site goes megamorphic, it stays there.</p>
+
+      <p>For a cleaner signal, use <code>ic-fuzzer</code> to find the minimal set of shapes that cause the problem:</p>
+
+      <pre>node bin/ic-fuzzer.js ../broken/handler.js handleEvent \
+  --seed='{"type":"click","id":1,"value":2}'</pre>
+
+      <pre>[ic-fuzzer] minimal set: 5 shape(s)  (0 shrink step(s))
+
+   1. literal:type-id-value         { type, id, value }  literal
+   2. incr:type-value-id            e.type; e.value; e.id  incremental
+   3. incr:id-type-value            e.id; e.type; e.value  incremental
+   4. incr:value-type-id            e.value; e.type; e.id  incremental
+   5. incr:value-id-type            e.value; e.id; e.type  incremental
+
+[ic-fuzzer] IC sites at megamorphic:
+    [MEGAMORPHIC ]  .id     handleEvent  (broken/handler.js:10:16)
+    [MEGAMORPHIC ]  .type   handleEvent  (broken/handler.js:10:32)
+    [MEGAMORPHIC ]  .value  handleEvent  (broken/handler.js:10:52)</pre>
+
+      <p>Five distinct shapes — that's the threshold. In production, events arrive from multiple producers with subtly different property insertion orders, which means five shapes is trivially reached.</p>
+
+      <h2>The fix</h2>
+
+      <p>Shape diversity usually enters at a system boundary — where events from external sources hit your hot path. The fix is to normalize there: coerce all incoming objects to a single canonical shape before the hot code sees them.</p>
+
+      <pre>// fixed/event.js — the boundary normalizer
+function toEvent(raw) {
+  return { type: raw.type, id: raw.id, value: raw.value };
+}
+
+// drive.js — normalize at ingestion, not in the hot path
+events.forEach(raw => handleEvent(toEvent(raw)));</pre>
+
+      <p>Now every object that reaches <code>handleEvent</code> has the same hidden class. V8 sees one shape, stays monomorphic, Turbofan inlines the property accesses as direct memory loads. The hot path didn't change at all.</p>
+
+      <h2>Enforcing it in CI</h2>
+
+      <p>Shape normalization is easy to regress — someone adds a field to an event type upstream, and the canonical shape silently diverges. A CI gate catches this before it ships:</p>
+
+      <pre>// ci/monomorphic-gate.js
+const { probe, derive } = require('ic-fuzzer');
+
+const file = path.resolve('src/handler.js');
+const seed = { type: 'click', id: 1, value: 2 };
+
+const five = derive(seed).slice(0, 5);   // five shapes → enough to trigger megamorphism
+const { severity } = await probe(file, 'handleEvent', five);
+
+if (severity >= 3) {
+  console.error(`handleEvent is megamorphic — normalize at the boundary`);
+  process.exit(1);
+}</pre>
+
+      <p>Drop-in GitHub Actions job in <code>.github/workflows/deopt-gate.yml</code>. The gate fails on <code>broken/handler.js</code> and passes on <code>fixed/handler.js</code>.</p>
+
+      <h2>The full workflow</h2>
+
+      <ol class="steps">
+        <li><strong>Find it.</strong> Run <code>ic-fuzzer</code> to get the minimal shape set and the exact IC sites going megamorphic.</li>
+        <li><strong>Quantify it.</strong> Use <code>--bench</code> to get a timing ratio before touching the code. Know what you're fixing.</li>
+        <li><strong>Fix it.</strong> Write a boundary normalizer that coerces all inputs to a single canonical shape. The hot path stays untouched.</li>
+        <li><strong>Verify it.</strong> Run <code>--assert-max=monomorphic</code> on the hot path. Gate it in CI so it can't regress.</li>
+      </ol>
+
+      <h2>ic-fuzzer: how it works</h2>
+
+      <p><code>ic-fuzzer</code> uses IC severity — not crashes or coverage — as the feedback signal. It derives shape variants from a seed object (different property insertion orders, extra fields, class instances vs. literals), then uses a fast-check loop to find the minimal set that pushes a call site to megamorphic and shrinks it.</p>
+
+      <p>The key insight is that V8's IC transitions are deterministic given a fixed property access sequence. That makes them tractable to search over: you don't need random mutations, you need systematic shape variation.</p>
+
+      <table>
+        <thead><tr><th>Situation</th><th>Cause</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td>No IC data</td><td>Wrong export name, or seed doesn't trigger the call path</td><td>Fix the seed</td></tr>
+          <tr><td><code>X</code>/no_feedback state</td><td>Turbofan compiled before the probe ran; IC sites replaced</td><td>Use <code>--no-turbofan</code></td></tr>
+          <tr><td>No property accesses</td><td>Function doesn't read properties on its argument</td><td>ic-fuzzer doesn't apply</td></tr>
+        </tbody>
+      </table>
+
+      <p>Flags: <code>--target=polymorphic</code>, <code>--corpus</code>, <code>--watch</code> (redirect IC collection to a library file), <code>--bench</code>, <code>--assert-max</code>, <code>--no-turbofan</code>, <code>--trace-deopt</code>, <code>--report-maps</code>, <code>--rng</code> (reproduce a run).</p>
+
+      <p>The repo also ships a full programmatic API (<code>probe</code>, <code>fuzz</code>, <code>bench</code>, <code>derive</code>) for integrating into test suites or building custom harnesses around private functions.</p>
+
+      <div class="art-footer">
+        <div>
+          <div>→ <a href="https://github.com/ericsssan/ic-fuzzer">github.com/ericsssan/ic-fuzzer</a></div>
+          <div class="tag-row">
+            <span class="tag">node.js</span>
+            <span class="tag">v8</span>
+            <span class="tag">jit</span>
+            <span class="tag">performance</span>
+            <span class="tag">typescript</span>
+          </div>
+        </div>
+        <a href="/">← Back to portfolio</a>
+      </div>
+
+    </article>
+  </div>
+
+</body>
+</html>
