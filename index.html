@@ -23,8 +23,8 @@
   .tagline { font-size: 17px; font-weight: 600; color: var(--accent); margin: 0 0 10px; }
   .contact { font-size: 14px; color: var(--muted); margin: 0 0 4px; }
   .contact a { color: var(--accent); }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { text-decoration-thickness: 2px; }
 
   h2 {
     font-size: 13px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700;
@@ -46,6 +46,8 @@
 
   .project p { margin: 4px 0; }
   .project strong { color: var(--accent-dark); }
+  .project a { color: var(--accent); font-weight: 700; }
+  .project a::after { content: "\2197"; font-size: .78em; margin-left: 2px; display: inline-block; text-decoration: none; }
 
   .skills p { margin: 5px 0; }
   .skills strong { display: inline-block; min-width: 132px; color: var(--accent-dark); }
