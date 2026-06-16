@@ -138,7 +138,7 @@
     <h2>Selected Projects</h2>
 
     <div class="project">
-      <p><strong>Jarvis AI</strong> &mdash; A RAG platform that turns a fund manager's document archive into a queryable research partner. I built the Go microservices backend: REST + WebSocket streaming chat over a hybrid retrieval pipeline (vector + full-text search, reciprocal-rank fusion, Gemini reranking), event-driven workers over PGMQ queues, and email/web ingestion crawlers feeding a Python/Docling extraction service. Hardened it end to end &mdash; JWT and Google-OAuth auth, AES-256-GCM encryption of stored credentials, and a defense-in-depth HTTP layer (CSP, security headers, rate limiting). Go, Python, Supabase (Postgres + pgvector), Gemini, GCP, Terraform.</p>
+      <p><strong>Jarvis AI</strong> &mdash; A production RAG platform that turns a fund's research archive into a conversational assistant. I designed and built the backend end-to-end: a Go + Python microservices system with retrieval done properly (hybrid search + reranking, not naive vector lookup), automated document ingestion, and encryption and hardened auth throughout. Go, Python, Supabase/pgvector, Gemini, GCP.</p>
     </div>
     <div class="project">
       <p><strong><a href="https://assetpass.com">AssetPass</a></strong> &mdash; A digital-legacy platform where data is encrypted on the client and never readable by the server. I designed and built the encryption and secure-authentication layers. Next.js on Kubernetes.</p>
