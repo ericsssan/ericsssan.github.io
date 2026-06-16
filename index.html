@@ -18,8 +18,9 @@
   }
   main { max-width: 820px; margin: 0 auto; padding: 48px 24px 64px; }
 
-  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; border-bottom: 3px solid var(--accent); padding-bottom: 14px; margin-bottom: 8px; }
-  .header-main { min-width: 0; }
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: nowrap; border-bottom: 3px solid var(--accent); padding-bottom: 14px; margin-bottom: 8px; }
+  .header-main { flex: 1 1 auto; min-width: 0; }
+  @media (max-width: 520px) { header { flex-wrap: wrap; } .download { margin-top: 10px; } }
   h1 { font-size: 30px; margin: 0 0 2px; letter-spacing: -.01em; }
   .tagline { font-size: 17px; font-weight: 600; color: var(--accent); margin: 0 0 10px; }
   .contact { font-size: 14px; color: var(--muted); margin: 0 0 4px; }
