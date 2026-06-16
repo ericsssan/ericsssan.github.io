@@ -156,11 +156,18 @@
   <section>
     <h2>Open-Source Projects</h2>
     <div class="repo-group">
-      <p class="label">Security &amp; correctness</p>
+      <p class="label">A TypeScript toolchain in Zig</p>
+      <ul>
+        <li><a href="https://github.com/ericsssan/ez">ez</a> &mdash; high-performance JS/TS parser + linter with a zero-copy ESLint plugin runner: run any ESLint plugin (core, <code>n</code>, <code>es-x</code>, <code>import</code>) against the Zig AST without reimplementing a single rule. SIMD lexer, struct-of-arrays AST.</li>
+        <li><a href="https://github.com/ericsssan/ez-checker">ez-checker</a> &mdash; a from-scratch reimplementation of the TypeScript type checker (the type-system core of <code>tsc</code>) in Zig: full inference, control-flow narrowing, conditional/mapped/utility types. ~83% TypeScript-corpus conformance.</li>
+        <li><a href="https://github.com/ericsssan/es-parser">es-parser</a> &mdash; the fast, standalone JS/TS/JSX parser the toolchain is built on; SIMD lexer, struct-of-arrays AST; 3,966/3,966 test262.</li>
+      </ul>
+    </div>
+    <div class="repo-group">
+      <p class="label">Security &amp; static analysis</p>
       <ul>
         <li><a href="https://github.com/ericsssan/san">san</a> &mdash; deep static analyzer for <code>unsafe</code> Rust; rustc MIR driver, dataflow + typestate analysis, 132 checkers.</li>
         <li><a href="https://github.com/ericsssan/zbc">zbc</a> &mdash; infers Zig lifetime, ownership, and cleanup bugs with no annotations.</li>
-        <li><a href="https://github.com/ericsssan/ez-checker">ez-checker</a> &mdash; TypeScript type checker; full inference and control-flow narrowing.</li>
       </ul>
     </div>
     <div class="repo-group">
@@ -174,7 +181,6 @@
       <p class="label">Performance</p>
       <ul>
         <li><a href="https://github.com/ericsssan/ic-fuzzer">ic-fuzzer</a> &mdash; diagnoses and fixes V8 JIT megamorphic deoptimizations in Node/TypeScript.</li>
-        <li><a href="https://github.com/ericsssan/es-parser">es-parser</a> &mdash; JS/TS/JSX parser; SIMD lexer, struct-of-arrays AST; 3,966/3,966 test262.</li>
       </ul>
     </div>
   </section>
