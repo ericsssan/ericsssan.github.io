@@ -20,7 +20,10 @@
 
   header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: nowrap; border-bottom: 3px solid var(--accent); padding-bottom: 14px; margin-bottom: 8px; }
   .header-main { flex: 1 1 auto; min-width: 0; }
-  @media (max-width: 520px) { header { flex-wrap: wrap; } .download { margin-top: 10px; } }
+  @media (max-width: 520px) {
+    header { flex-wrap: wrap; } .download { margin-top: 10px; }
+    .skills p { flex-direction: column; gap: 0; } .skills strong { flex: none; }
+  }
   h1 { font-size: 30px; margin: 0 0 2px; letter-spacing: -.01em; }
   .tagline { font-size: 17px; font-weight: 600; color: var(--accent); margin: 0 0 10px; }
   .contact { font-size: 14px; color: var(--muted); margin: 0 0 4px; }
@@ -51,8 +54,8 @@
   .project a { color: var(--accent); font-weight: 700; }
   .project a::after { content: "\2197"; font-size: .78em; margin-left: 2px; display: inline-block; text-decoration: none; }
 
-  .skills p { margin: 5px 0; }
-  .skills strong { display: inline-block; min-width: 132px; color: var(--accent-dark); }
+  .skills p { display: flex; gap: 8px; margin: 5px 0; }
+  .skills strong { flex: 0 0 150px; color: var(--accent-dark); }
 
   .section-intro { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
 
@@ -117,6 +120,11 @@
       <p><strong>Testing:</strong> Playwright, Vitest, Jest, pytest, PestPHP</p>
       <p><strong>Observability:</strong> New Relic, Datadog, Sentry</p>
     </div>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <p><strong>B.Eng. Computer Engineering</strong> &mdash; National University of Singapore</p>
   </section>
 
   <section class="page-break">
@@ -187,11 +195,6 @@
         <li><a href="https://github.com/ericsssan/zhttp3">zhttp3</a> &mdash; HTTP/3 framing, QPACK header compression, and a server layer built on zquic.</li>
       </ul>
     </div>
-  </section>
-
-  <section>
-    <h2>Education</h2>
-    <p><strong>B.Eng. Computer Engineering</strong> &mdash; National University of Singapore</p>
   </section>
 
   <footer>
