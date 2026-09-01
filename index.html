@@ -103,7 +103,7 @@
 
   <section>
     <h2>Summary</h2>
-    <p class="summary">Security-focused senior full-stack engineer with <span id="years">10</span> years of remote experience delivering secure-by-design web applications for client companies across Europe. I have delivered in environments where security and compliance are contract requirements rather than afterthoughts &mdash; GDPR obligations, threat modeling before sprint planning, recurring third-party penetration tests, and the engineering answers behind customer security questionnaires. I work the whole stack &mdash; web products in Next.js, React, Django, and Laravel, and AI/RAG systems in Go and Python &mdash; and own the cryptography and architecture that protect the data behind them. I also build the layers most engineers just consume: TLS/QUIC transport, type checkers, and static analyzers. I develop agent-first &mdash; orchestrated AI coding workflows are how I work at that scope, while the architecture, cryptography, and correctness decisions stay mine.</p>
+    <p class="summary">Security-focused senior full-stack engineer with <span id="years">10</span> years of remote experience building web products for client companies across Europe. I work where security and compliance are contract requirements rather than afterthoughts: GDPR obligations, threat modeling before sprint planning, recurring third-party penetration tests, and I own the cryptography and architecture behind them. I develop agent-first, and on my side projects I build open-source tooling: TLS/QUIC transport, type checkers, static analyzers.</p>
   </section>
 
   <section>
@@ -142,7 +142,7 @@
         <li>Own web-side remediation for recurring third-party penetration tests, closing authentication and session-handling findings each cycle.</li>
         <li>Set security requirements at design time through team threat modeling ahead of each sprint, and supplied the engineering answers behind customer security questionnaires, enterprise due-diligence reviews, and the company's ISO 27001 certification effort.</li>
         <li>Delivered client products across healthcare, sales, and assessment, owning architecture, code quality, and CI/CD from first commit through production.</li>
-        <li>Traced and fixed the query patterns behind slow reporting endpoints on data-heavy products &mdash; indexing, query restructuring, and pre-computation &mdash; holding response times steady as datasets grew.</li>
+        <li>Traced and fixed the query patterns behind slow reporting endpoints on data-heavy products, using indexing, query restructuring, and pre-computation to hold response times steady as datasets grew.</li>
         <li>Modernized legacy client applications onto maintained frameworks, including production data migrations off legacy PHP.</li>
         <li>Review teammates' pull requests with an agent-assisted workflow, verifying each finding against a runnable harness and holding implementations to defense in depth rather than a single point of control.</li>
       </ul>
@@ -156,7 +156,7 @@
       <p><strong><a href="https://assetpass.com">AssetPass</a></strong> &mdash; A digital-legacy platform where data is encrypted on the client and never readable by the server. I re-architected the client-side encryption into an isolated vault package running in a Web Worker, keeping key material off the main thread, and hardened the encryption and authentication code alongside a significantly stricter Content-Security-Policy. Next.js, React, TypeScript, Web Crypto API, Argon2id (WASM), WebAuthn/passkeys.</p>
     </div>
     <div class="project">
-      <p><strong><a href="https://jarvisasset.com">Jarvis Asset</a></strong> &mdash; A production RAG platform that turns a fund's research archive into a conversational assistant. I build it across the stack: a microservices backend &mdash; hybrid retrieval (semantic + keyword search, reranked), automated document ingestion, encryption and hardened auth &mdash; and a mobile client. Go, Python, React Native, Supabase/pgvector, Gemini, GCP.</p>
+      <p><strong><a href="https://jarvisasset.com">Jarvis Asset</a></strong> &mdash; A production RAG platform that turns a fund's research archive into a conversational assistant. I build it across the stack: a microservices backend with hybrid retrieval (semantic + keyword search, reranked), automated document ingestion, encryption and hardened auth, plus a mobile client. Go, Python, React Native, Supabase/pgvector, Gemini, GCP.</p>
     </div>
     <div class="project">
       <p><strong><a href="https://www.asentaa.com">Asentaa SaaS Platform</a></strong> &mdash; A multi-tenant candidate-assessment SaaS platform; I rebuilt it from a legacy on-site tool, reworking the scoring engine and migrating existing data. Laravel, React, Tailwind CSS.</p>
@@ -171,7 +171,7 @@
 
   <section class="page-break">
     <h2>Open-Source Projects</h2>
-    <p class="section-intro">Side projects, built from scratch to learn compiler, analysis, and protocol internals &mdash; experiments rather than production libraries. Agent-first: one coding agent per issue across parallel git worktrees, gated on differential-test harnesses over the reference conformance suites.</p>
+    <p class="section-intro">Side projects, built from scratch to learn compiler, analysis, and protocol internals; experiments rather than production libraries. Agent-first: one coding agent per issue across parallel git worktrees, gated on differential-test harnesses over the reference conformance suites.</p>
     <div class="repo-group">
       <p class="label">A TypeScript toolchain in Zig</p>
       <ul>
