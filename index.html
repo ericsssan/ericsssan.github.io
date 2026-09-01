@@ -145,7 +145,7 @@
       <p><strong><a href="https://jarvisasset.com">Jarvis Asset</a></strong> &mdash; A production RAG platform that turns a fund's research archive into a conversational assistant. I build it across the stack: a microservices backend &mdash; hybrid retrieval (semantic + keyword search, reranked), automated document ingestion, encryption and hardened auth &mdash; and a mobile client. Go, Python, React Native, Supabase/pgvector, Gemini, GCP.</p>
     </div>
     <div class="project">
-      <p><strong><a href="https://assetpass.com">AssetPass</a></strong> &mdash; A digital-legacy platform where data is encrypted on the client and never readable by the server. I designed and built the encryption and secure-authentication layers. Next.js, Azure (AKS).</p>
+      <p><strong><a href="https://assetpass.com">AssetPass</a></strong> &mdash; A digital-legacy platform where data is encrypted on the client and never readable by the server. I re-architected the client-side encryption into an isolated vault package running in a Web Worker, keeping key material off the main thread, and hardened the encryption and authentication code alongside a significantly stricter Content-Security-Policy. Next.js, React, TypeScript, Web Crypto API, Argon2id (WASM), WebAuthn/passkeys.</p>
     </div>
     <div class="project">
       <p><strong><a href="https://www.asentaa.com">Asentaa SaaS Platform</a></strong> &mdash; A multi-tenant candidate-assessment SaaS platform; I rebuilt it from a legacy on-site tool, reworking the scoring engine and migrating existing data. Laravel, React, Tailwind CSS.</p>
