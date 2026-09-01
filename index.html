@@ -99,13 +99,13 @@
 
   <section>
     <h2>Summary</h2>
-    <p class="summary">Security-focused senior full-stack engineer with <span id="years">10</span> years of remote experience delivering secure-by-design web applications for client companies across Europe. I work the whole stack &mdash; web products in Next.js, React, Django, and Laravel, and AI/RAG systems in Go and Python &mdash; and own the cryptography and architecture that protect the data behind them. I also build the layers most engineers just consume: TLS/QUIC transport, type checkers, and static analyzers. I develop agent-first &mdash; orchestrated AI coding workflows are how I work at that scope, while the architecture, cryptography, and correctness decisions stay mine.</p>
+    <p class="summary">Security-focused senior full-stack engineer with <span id="years">10</span> years of remote experience delivering secure-by-design web applications for client companies across Europe. I have delivered in environments where security and compliance are contract requirements rather than afterthoughts &mdash; GDPR obligations, threat modeling before sprint planning, recurring third-party penetration tests, and the engineering answers behind customer security questionnaires. I work the whole stack &mdash; web products in Next.js, React, Django, and Laravel, and AI/RAG systems in Go and Python &mdash; and own the cryptography and architecture that protect the data behind them. I also build the layers most engineers just consume: TLS/QUIC transport, type checkers, and static analyzers. I develop agent-first &mdash; orchestrated AI coding workflows are how I work at that scope, while the architecture, cryptography, and correctness decisions stay mine.</p>
   </section>
 
   <section>
     <h2>Technical Skills</h2>
     <div class="skills">
-      <p><strong>Security:</strong> End-to-end encryption (E2EE), cryptographic primitives, penetration-testing remediation, secure development practices</p>
+      <p><strong>Security &amp; Compliance:</strong> End-to-end encryption (E2EE), zero-knowledge architecture, defense in depth, cryptographic primitives and key management, Secure SDLC, threat modeling, third-party penetration-test remediation, security questionnaires and vendor due diligence, GDPR, data minimization and retention</p>
       <p><strong>Languages:</strong> TypeScript / JavaScript, Python, PHP, Rust, Zig, Go, SQL</p>
       <p><strong>Frontend:</strong> React, React Native (Expo), Next.js, Vue.js, Tailwind CSS, Flutter</p>
       <p><strong>Backend:</strong> Django, Django REST Framework, Laravel, Node.js</p>
@@ -131,10 +131,11 @@
       <ul>
         <li>Built encryption-first features for products handling sensitive user data, owning the client-side cryptography and key-handling design.</li>
         <li>Own web-side remediation for recurring third-party penetration tests, closing authentication and session-handling findings each cycle.</li>
+        <li>Set security requirements at design time through team threat modeling ahead of each sprint, and supplied the engineering answers behind customer security questionnaires, enterprise due-diligence reviews, and the company's ISO 27001 certification effort.</li>
         <li>Delivered client products across healthcare, sales, and assessment, owning architecture, code quality, and CI/CD from first commit through production.</li>
         <li>Traced and fixed the query patterns behind slow reporting endpoints on data-heavy products &mdash; indexing, query restructuring, and pre-computation &mdash; holding response times steady as datasets grew.</li>
         <li>Modernized legacy client applications onto maintained frameworks, including production data migrations off legacy PHP.</li>
-        <li>Review teammates' pull requests with an agent-assisted workflow, verifying each finding against a runnable harness before raising it.</li>
+        <li>Review teammates' pull requests with an agent-assisted workflow, verifying each finding against a runnable harness and holding implementations to defense in depth rather than a single point of control.</li>
       </ul>
     </div>
   </section>
@@ -155,7 +156,7 @@
       <p><strong><a href="https://www.salesgoal.com">SalesGoal</a></strong> &mdash; A sales-management platform for pipeline tracking, performance analytics, and revenue forecasting. I built its drag-and-drop pipeline boards and data-visualization dashboards. Laravel, React, TypeScript, visx, Playwright.</p>
     </div>
     <div class="project">
-      <p><strong><a href="https://www.keyforcare.se">KeyForCare Analytics</a></strong> &mdash; A patient-feedback and quality system for healthcare providers; I automated the report generation and distribution pipeline with caching and pre-computation. Vanilla PHP, Laravel, MySQL, Redis.</p>
+      <p><strong><a href="https://www.keyforcare.se">KeyForCare Analytics</a></strong> &mdash; A patient-feedback and quality system for healthcare providers; I automated the report generation and distribution pipeline with caching and pre-computation, with respondent contact data encrypted in place and wiped after each survey cycle. Vanilla PHP, Laravel, MySQL, Redis.</p>
     </div>
   </section>
 
